@@ -5,18 +5,23 @@ MIDIIn.connectAll;
 (
 ~noteOn.free;
 ~noteOff.free;
-~binary = Array.fill(71, 0);
+// set a range of octaves -- WARNING!: Will throw an error if not in the octave range
+~minOctave = 4;
+~maxOctave = 6;
+// white keys only
+~notesPerOctave = 7;
+~binary = { Array.fill(~notesPerOctave * (~maxOctave - ~minOctave) + 1, 0); }.value;
 
 ~updatePressedKeys = { |key, value|
-	var octave = (key/12).asInt;
+	var octave = (key/12).asInt - ~minOctave;
 	var degree = key.mod(12);
 	// avoid black keys
 	var index = Scale.major.degrees.indexOf(degree);
 	// index in the binary array to be changed
-	var binindex = (octave * Scale.major.degrees.size) + index;
+	var binindex = (octave * ~notesPerOctave) + index;
 	var bin ;
 	~binary[binindex] = value;
-	bin = (~binary * 2.pow((0..70).reverse)).sum.asInt;
+	bin = (~binary * 2.pow((0..(~binary.size-1)).reverse)).sum.asInt;
 
 	["key: "++key, "degree: "++degree, "octave: "++octave, "index: "++index, "binindex: "++binindex, "bin: "++bin].postln;
 };
