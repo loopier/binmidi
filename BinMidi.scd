@@ -5,34 +5,7 @@ MIDIIn.connectAll;
 (
 ~noteOn.free;
 ~noteOff.free;
-// ~pressedKeysDict = Dictionary.newFrom([ Scale.phrygian.degrees, 0].lace(24))!11;
 ~binary = Array.fill2D(11, 7, 0);
-~isPressed = False;
-
-/*~toBinary = { |octave|
-	~pressedKeysDict[octave].keys.asSortedList.do {|key, i|
-		postf("% -> %\n", i, ~pressedKeysDict[octave][key]);
-		// ~binary[octave][~binary.size - 1 - i]  = ~pressedKeysDict[octave][key];
-	};
-	// ~isPressed = ~binary.sum > 0;
-	// ~print.value;
-};*/
-
-~print = {
-/*	~pressedKeysDict.do {|item, i|
-		postf("%: %\n", i, item.keys.asSortedList);
-
-	};
-	~binary.do {|item, i| postf("%: %\n", i, item.postln)};*/
-
-/*	if (~isPressed) {
-		// "pressed".postln;
-		~binary.postln;
-	} {
-		~binary.postln;
-		"released".postln;
-	}*/
-};
 
 // Returns the index of the degree in a scale
 ~getDegreeIndex = {|degree, scale|
@@ -55,8 +28,6 @@ MIDIIn.connectAll;
 	// ~binary.do { |item, i| postf("%: %\n", i, item.postln); };
 	postf("% -- %\n", octave, ~binary[octave]);
 };
-~addPressedKey = { |key, octave| ~updatePressedKeys.value(key, octave, 1)};
-~removePressedKey = { |key, octave| ~updatePressedKeys.value(key, octave, 0)};
 
 ~noteOn = MIDIFunc.noteOn({ |vel, num, chan, src|
 	// postf("note on %\n", [vel, num, chan, src]);
