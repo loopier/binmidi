@@ -39,5 +39,3 @@ MIDIIn.connectAll;
 	~updatePressedKeys.value(num, 0);
 });
 )
-
-[[1,0],[1,0]].sum
