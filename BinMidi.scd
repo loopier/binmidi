@@ -5,28 +5,20 @@ MIDIIn.connectAll;
 (
 ~noteOn.free;
 ~noteOff.free;
-~binary = Array.fill2D(11, 7, 0);
-
-// Returns the index of the degree in a scale
-~getDegreeIndex = {|degree, scale|
-	var index;
-	if (scale == nil) { scale = Scale.phrygian };
-	scale.degrees.do {
-		|item, i|
-		if (item==degree) { index = scale.size - 1 - i };
-	};
-	index;
-};
+~binary = Array.fill(71, 0);
 
 ~updatePressedKeys = { |key, value|
-	var octave = ((key-1)/12).asInt;
-	var degree = (12-key).mod(12);
-	// get index in binary array from degree
-	var index = ~getDegreeIndex.value(degree);
-	~binary[octave][index] = value;
-	// postf("oct: %  deg: %  val: %  index: %\n", octave, degree, value, index);
-	// ~binary.do { |item, i| postf("%: %\n", i, item.postln); };
-	postf("% -- %\n", octave, ~binary[octave]);
+	var octave = (key/12).asInt;
+	var degree = key.mod(12);
+	// avoid black keys
+	var index = Scale.major.degrees.indexOf(degree);
+	// index in the binary array to be changed
+	var binindex = (octave * Scale.major.degrees.size) + index;
+	var bin ;
+	~binary[binindex] = value;
+	bin = (~binary * 2.pow((0..70).reverse)).sum.asInt;
+
+	["key: "++key, "degree: "++degree, "octave: "++octave, "index: "++index, "binindex: "++binindex, "bin: "++bin].postln;
 };
 
 ~noteOn = MIDIFunc.noteOn({ |vel, num, chan, src|
@@ -39,3 +31,4 @@ MIDIIn.connectAll;
 	~updatePressedKeys.value(num, 0);
 });
 )
+
